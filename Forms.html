@@ -1,0 +1,110 @@
+<DOCTYPE  html>
+<html lang="pt-br">
+    <head>
+        <link rel="stylesheet" href="styleee.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Forms de entrega</title>
+        
+        <script>
+    
+            function limpaFormulárioCEP() {
+                    //Limpa valores do formulário de cep.
+                    document.getElementById('Rua').value=("");
+                    document.getElementById('Bairro').value=("");
+            }
+        
+            function meu_callback(conteudo) {
+                if (!("erro" in conteudo)) {
+                    //Atualiza os campos com os valores.
+                    document.getElementById('Rua').value=(conteudo.logradouro);
+                    document.getElementById('Bairro').value=(conteudo.bairro);
+                } //end if.
+                else {
+                    //CEP não Encontrado.
+                    limpaFormulárioCEP();
+                    alert("CEP não encontrado.");
+                }
+            }
+                
+            function pesquisaCEP(valor) {
+        
+                //Nova variável "cep" somente com dígitos.
+                var cep = valor.replace(/\D/g, '');
+
+                if(cep.length < 8){
+                    
+                }
+                
+                
+                
+                //Verifica se campo cep possui valor informado.
+                if (cep != "") {
+        
+                    //Expressão regular para validar o CEP.
+                    var validacep = /^[0-9]{8}$/;
+        
+                    //Valida o formato do CEP.
+                    if(validacep.test(cep)) {
+        
+                        //Preenche os campos com "..." enquanto consulta webservice.
+                        document.getElementById('Rua').value="...";
+                        document.getElementById('Bairro').value="...";
+                    
+        
+                        //Cria um elemento javascript.
+                        var script = document.createElement('script');
+        
+                        //Sincroniza com o callback.
+                        script.src = 'https://viacep.com.br/ws/'+ cep + '/json/?callback=meu_callback';
+        
+                        //Insere script no documento e carrega o conteúdo.
+                        document.body.appendChild(script);
+        
+                    } //end if.
+                    else {
+                        //cep é inválido.
+                        limpaFormulárioCEP();
+                        alert("Formato de CEP inválido.");
+                    }
+                } //end if.
+                else {
+                    //cep sem valor, limpa formulário.
+                    limpaFormulárioCEP();
+                }
+            };
+        
+            </script>
+
+    </head>
+<body>
+    <div class="container-principal">    
+    <div class="titulo"><h1>Endereço</h1></div>
+       
+        <main>    
+            <form>
+                <label> CEP:</label>
+                <input type="number" id='CEP' onblur="pesquisaCEP(this.value)">
+            
+                <label> Bairro:</label>
+                <input type="text" id='Bairro'>
+                
+                <label> Rua:</label>
+                <input type ="text" id='Rua'>
+            
+                <label> Numero:</label>
+                <input type="number">
+            
+                <label> Complemento:</label>
+                <input type="Text">
+    
+                 <input type="submit" value="Enviar Endereço">
+            </form>
+        </main>
+    </div>
+</body>
+    
+</html>
+
+
+
